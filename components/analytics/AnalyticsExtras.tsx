@@ -3,9 +3,9 @@
 import { differenceInMonths } from "date-fns";
 import { Crown, Hourglass, Repeat } from "lucide-react";
 import { useSpendSummary } from "@/hooks/useSpendSummary";
-import { useStore } from "@/lib/store";
+import { useDisplayCurrency } from "@/hooks/useDisplayCurrency";
 import { Card } from "@/components/ui/card";
-import { formatCurrency, toAnnual } from "@/lib/utils";
+import { toAnnual } from "@/lib/utils";
 import { SubscriptionLogo } from "@/components/subscriptions/SubscriptionLogo";
 
 export function BillingRatioCard() {
@@ -55,13 +55,13 @@ export function BillingRatioCard() {
 
 export function CalloutCards() {
   const { mostExpensive, longestHeld } = useSpendSummary();
-  const currency = useStore((s) => s.settings.currency);
+  const { formatDisplay } = useDisplayCurrency();
 
   return (
     <div className="grid gap-4 sm:grid-cols-2">
       <Card className="glass relative overflow-hidden p-5">
         <div className="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-amber-500/20 blur-2xl" />
-        <div className="flex items-center gap-2 text-amber-400">
+        <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400">
           <Crown className="h-5 w-5" />
           <h3 className="text-sm font-semibold">Most expensive</h3>
         </div>
@@ -71,7 +71,10 @@ export function CalloutCards() {
             <div>
               <p className="font-semibold">{mostExpensive.name}</p>
               <p className="text-sm text-muted-foreground">
-                {formatCurrency(toAnnual(mostExpensive.amount, mostExpensive.billingCycle), currency)}
+                {formatDisplay(
+                  toAnnual(mostExpensive.amount, mostExpensive.billingCycle),
+                  mostExpensive.currency
+                )}
                 /yr
               </p>
             </div>

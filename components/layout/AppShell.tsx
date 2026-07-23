@@ -6,7 +6,10 @@ import { Header } from "./Header";
 import { MobileNav } from "./MobileNav";
 import { QuickAddFab } from "./QuickAddFab";
 import { GuestBanner } from "./GuestBanner";
+import { SampleDataBanner } from "./SampleDataBanner";
 import { PageTransition } from "@/components/page-transition";
+import { FxRatesLoader } from "@/components/fx-rates-loader";
+import { RenewalReminders } from "@/components/renewal-reminders";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   return (
@@ -15,6 +18,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <div className="flex min-w-0 flex-1 flex-col">
         <Header />
         <GuestBanner />
+        <SampleDataBanner />
         <main
           id="main-content"
           tabIndex={-1}
@@ -27,6 +31,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </div>
       <MobileNav />
       <QuickAddFab />
+      <FxRatesLoader />
+      <RenewalReminders />
     </div>
   );
 }

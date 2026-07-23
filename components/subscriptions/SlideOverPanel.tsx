@@ -24,13 +24,8 @@ import { Button } from "@/components/ui/button";
 import { CategoryBadge, StatusBadge } from "./badges";
 import { SubscriptionLogo } from "./SubscriptionLogo";
 import type { Subscription } from "@/lib/types";
-import {
-  daysUntil,
-  formatCurrency,
-  toAnnual,
-  toMonthly,
-  urgencyLabel,
-} from "@/lib/utils";
+import { billingPeriod, daysUntil, toAnnual, toMonthly, urgencyLabel } from "@/lib/utils";
+import { useDisplayCurrency } from "@/hooks/useDisplayCurrency";
 import { useSubscriptions } from "@/hooks/useSubscriptions";
 import { useEditor } from "@/components/editor-context";
 import { useToast } from "@/components/ui/toast";
@@ -63,6 +58,7 @@ export function SlideOverPanel({ sub, open, onOpenChange }: Props) {
   const { deleteSubscription, setStatus } = useSubscriptions();
   const { openEdit } = useEditor();
   const { toast } = useToast();
+  const { formatDisplay } = useDisplayCurrency();
 
   if (!sub) return null;
 
@@ -86,12 +82,12 @@ export function SlideOverPanel({ sub, open, onOpenChange }: Props) {
 
         <div className="flex items-baseline gap-2 rounded-xl bg-gradient-to-br from-primary/10 to-transparent p-4">
           <span className="text-3xl font-bold tabular-nums">
-            {formatCurrency(sub.amount, sub.currency)}
+            {formatDisplay(sub.amount, sub.currency)}
           </span>
-          <span className="text-sm text-muted-foreground">/ {sub.billingCycle.toLowerCase()}</span>
+          <span className="text-sm text-muted-foreground">/ {billingPeriod(sub.billingCycle)}</span>
           <span className="ml-auto text-right text-xs text-muted-foreground">
-            ≈ {formatCurrency(toMonthly(sub.amount, sub.billingCycle), sub.currency)}/mo
-            <br />≈ {formatCurrency(toAnnual(sub.amount, sub.billingCycle), sub.currency)}/yr
+            ≈ {formatDisplay(toMonthly(sub.amount, sub.billingCycle), sub.currency)}/mo
+            <br />≈ {formatDisplay(toAnnual(sub.amount, sub.billingCycle), sub.currency)}/yr
           </span>
         </div>
 

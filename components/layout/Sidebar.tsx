@@ -20,18 +20,14 @@ export function Sidebar() {
       className="sticky top-0 hidden h-screen shrink-0 flex-col border-r border-border/60 bg-card/40 backdrop-blur-xl md:flex"
       aria-label="Primary"
     >
-      <Link
-        href="/dashboard"
-        className="flex h-16 items-center gap-2 px-4 focus-ring"
-        aria-label="PayoraAI dashboard"
-      >
+      <div className="flex h-16 items-center gap-2 px-4">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/logo.svg"
-          alt=""
+          alt="SubTraq"
           width={36}
           height={36}
-          className="shrink-0 shadow-lg shadow-primary/30"
+          className="shrink-0 rounded-[10px] shadow-lg shadow-primary/30"
         />
         {!collapsed && (
           <motion.span
@@ -39,10 +35,10 @@ export function Sidebar() {
             animate={{ opacity: 1 }}
             className="text-base font-semibold tracking-tight"
           >
-            PayoraAI
+            SubTraq
           </motion.span>
         )}
-      </Link>
+      </div>
 
       <nav className="flex flex-1 flex-col gap-1 px-3 py-4">
         {NAV.map((item) => {

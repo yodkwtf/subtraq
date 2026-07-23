@@ -4,6 +4,7 @@ import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
 import { ToastProvider } from '@/components/ui/toast';
 import { AuthProvider } from '@/components/auth/auth-context';
+import { ServiceWorkerRegister } from '@/components/sw-register';
 
 const geistSans = Geist({
   subsets: ['latin'],
@@ -17,19 +18,29 @@ const geistMono = Geist_Mono({
   display: 'swap',
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
-const title = 'PayoraAI - Track subscriptions, kill the waste';
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  process.env.URL ??
+  'https://subtraq.netlify.app';
+const title = 'SubTraq - Track subscriptions, kill the waste';
 const description =
-  'PayoraAI is a beautiful subscription tracker. See every recurring payment, get renewal reminders, visualize your spend, and use AI to spot subscriptions worth cancelling.';
+  'SubTraq is a beautiful subscription tracker. See every recurring payment, get renewal reminders, visualize your spend, and use AI to spot subscriptions worth cancelling.';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
     default: title,
-    template: '%s · PayoraAI',
+    template: '%s - SubTraq',
   },
   description,
-  applicationName: 'PayoraAI',
+  applicationName: 'SubTraq',
+  alternates: { canonical: '/' },
+  formatDetection: { telephone: false, email: false, address: false },
+  appleWebApp: {
+    capable: true,
+    title: 'SubTraq',
+    statusBarStyle: 'black-translucent',
+  },
   keywords: [
     'subscription tracker',
     'subscription manager',
@@ -37,14 +48,14 @@ export const metadata: Metadata = {
     'renewal reminders',
     'spend tracker',
     'cancel subscriptions',
-    'PayoraAI',
+    'SubTraq',
   ],
-  authors: [{ name: 'PayoraAI' }],
-  creator: 'PayoraAI',
+  authors: [{ name: 'SubTraq' }],
+  creator: 'SubTraq',
   category: 'finance',
   openGraph: {
     type: 'website',
-    siteName: 'PayoraAI',
+    siteName: 'SubTraq',
     title,
     description,
     url: siteUrl,
@@ -78,20 +89,21 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
-      lang="en"
+      lang='en'
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable}`}
     >
-      <body className="font-sans" suppressHydrationWarning>
+      <body className='font-sans' suppressHydrationWarning>
         <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
+          attribute='class'
+          defaultTheme='dark'
           enableSystem={false}
           disableTransitionOnChange
         >
           <ToastProvider>
             <AuthProvider>{children}</AuthProvider>
           </ToastProvider>
+          <ServiceWorkerRegister />
         </ThemeProvider>
       </body>
     </html>

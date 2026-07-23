@@ -66,7 +66,6 @@ export function LogoPicker({ value, name, category, onChange }: Props) {
         </button>
       </PopoverTrigger>
       <PopoverContent align="start" className="w-80">
-        {/* Tabs */}
         <div className="mb-2 flex rounded-lg border border-border p-0.5" role="tablist">
           {(["brands", "letters"] as Tab[]).map((t) => (
             <button
@@ -131,6 +130,7 @@ export function LogoPicker({ value, name, category, onChange }: Props) {
                     onClick={() => pick(b.slug)}
                     className={cn(
                       "flex items-center justify-center rounded-lg p-1 transition-colors hover:bg-secondary focus-ring",
+                      "[content-visibility:auto] [contain-intrinsic-size:40px]",
                       value === b.slug && "bg-primary/15 ring-1 ring-primary"
                     )}
                   >

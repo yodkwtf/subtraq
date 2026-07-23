@@ -76,4 +76,6 @@ export interface Settings {
   currency: CurrencyCode;
   reminderThreshold: 3 | 7 | 14;
   name?: string;
+  /** When true, fire a browser notification for renewals within the threshold. */
+  notifyRenewals?: boolean;
 }

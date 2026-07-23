@@ -1,4 +1,4 @@
-import Anthropic from "@anthropic-ai/sdk";
+import { generateText, isAiConfigured, parseJsonLoose } from "@/lib/ai";
 
 export const runtime = "nodejs";
 
@@ -12,9 +12,9 @@ interface IncomingSub {
 }
 
 export async function POST(req: Request) {
-  if (!process.env.ANTHROPIC_API_KEY) {
+  if (!isAiConfigured()) {
     return Response.json(
-      { error: "ANTHROPIC_API_KEY is not configured on the server." },
+      { error: "GEMINI_API_KEY is not configured on the server." },
       { status: 500 }
     );
   }
@@ -31,31 +31,20 @@ export async function POST(req: Request) {
     return Response.json({ suggestions: [] });
   }
 
-  const client = new Anthropic(); // reads ANTHROPIC_API_KEY from env
-
   try {
-    const message = await client.messages.create({
-      model: "claude-sonnet-4-6",
-      max_tokens: 1024,
+    const text = await generateText({
       system:
         "You are a personal finance assistant that helps people trim wasteful subscriptions. " +
         "Be conservative: only suggest cancelling when there is a clear reason such as high cost, " +
         "redundant/overlapping services in the same category, or low likely usage. " +
         "Estimate potentialSaving as the ANNUAL cost saved. Respond with valid JSON only.",
-      messages: [
-        {
-          role: "user",
-          content: `Given these subscriptions: ${JSON.stringify(subscriptions)}, suggest which ones to cancel based on: high cost, low usage likelihood (inferred from category + overlapping services). Return ONLY valid JSON in this exact shape: { "suggestions": [{ "id": "", "name": "", "reason": "", "potentialSaving": 0 }] }`,
-        },
-      ],
+      prompt: `Given these subscriptions: ${JSON.stringify(subscriptions)}, suggest which ones to cancel based on: high cost, low usage likelihood (inferred from category + overlapping services). Return ONLY valid JSON in this exact shape: { "suggestions": [{ "id": "", "name": "", "reason": "", "potentialSaving": 0 }] }`,
+      maxOutputTokens: 4096,
+      temperature: 0.3,
+      json: true,
     });
 
-    const text =
-      message.content[0]?.type === "text" ? message.content[0].text : "";
-
-    // Be resilient to code fences or stray prose around the JSON.
-    const jsonString = extractJson(text);
-    const parsed = JSON.parse(jsonString);
+    const parsed = parseJsonLoose<{ suggestions?: unknown[] }>(text);
 
     const suggestions = Array.isArray(parsed?.suggestions)
       ? parsed.suggestions
@@ -74,15 +63,4 @@ export async function POST(req: Request) {
       err instanceof Error ? err.message : "Failed to generate suggestions.";
     return Response.json({ error: messageText }, { status: 502 });
   }
-}
-
-function extractJson(text: string): string {
-  const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/i);
-  if (fenced) return fenced[1].trim();
-  const start = text.indexOf("{");
-  const end = text.lastIndexOf("}");
-  if (start !== -1 && end !== -1 && end > start) {
-    return text.slice(start, end + 1);
-  }
-  return text.trim();
 }

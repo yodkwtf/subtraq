@@ -1,76 +1,88 @@
-# 💸 PayoraAI - Subscription Tracker
+# 💸 SubTraq - Subscription Tracker
 
-Track every subscription, see where your money goes, and kill the waste. PayoraAI gives
-you a premium dashboard for recurring payments, renewal reminders, spend analytics, and
-AI-powered cancellation suggestions.
+Track every subscription, see where your money goes, and cut the waste. SubTraq is a
+premium dashboard for recurring payments, renewal reminders, spend analytics, multi-currency
+totals, and AI-powered cancellation suggestions.
 
-Works instantly as a **guest** (data stays on your device), or **sign in** to sync your
-data across devices via Supabase.
+Try it instantly as a **guest** (data stays on your device), or **sign in** to sync across
+devices.
 
-## Live Preview
+**Live demo:** https://subtraq.netlify.app
 
-**Live:** https://payora-ai.netlify.app
+![SubTraq](./public/og-image.png)
 
-![PayoraAI screenshot](./public/og-image.png)
-
-## Stack
+## Tech stack
 
 - **Next.js 15** (App Router) + **TypeScript**
-- **Tailwind CSS v3** + shadcn/ui-style primitives (Radix)
-- **Framer Motion** for micro-interactions & page transitions
-- **Zustand** (+ `persist`) for client state and guest storage
-- **Supabase** for auth + per-user cloud data (optional)
-- **next-themes** for dark/light mode (dark by default, no flash)
-- **Recharts** for spend visualizations
-- **date-fns** for renewal math
-- **simple-icons** + **react-icons** for brand logos
-- **@anthropic-ai/sdk** (`claude-sonnet-4-6`) for AI cancellation suggestions
+- **Tailwind CSS v3** with Radix-based, shadcn/ui-style primitives
+- **Zustand** (`persist`) for client state and guest storage
+- **Supabase** for auth + per-user cloud sync (optional)
+- **Recharts** for spend charts, **Framer Motion** for motion, **date-fns** for renewal math
+- **Google Gemini** (free-tier REST API) for AI insights, Q&A, and add-form auto-fill
 
-## Quick start
+## Getting started
 
-```bash
-npm install
-npm run dev
-```
+1. **Install and run**
 
-Open [http://localhost:3000](http://localhost:3000), hit **Try the live demo**, and
-**Continue as guest** to explore with sample data right away.
+   ```bash
+   npm install
+   npm run dev
+   ```
 
-To enable AI Insights and real accounts, follow [guide.md](./guide.md): it covers the
-Anthropic key and the (free) Supabase setup step by step.
+   Open [http://localhost:3000](http://localhost:3000) and click **Continue as guest** to
+   explore with sample data - no keys or setup required.
+
+2. **(Optional) Enable AI and real accounts.** Copy the example env file and fill in only
+   the values you want:
+
+   ```bash
+   cp .env.example .env.local
+   ```
+
+   | Variable                                                            | Enables                                     | Where to get it                                                  |
+   | ------------------------------------------------------------------- | ------------------------------------------- | ---------------------------------------------------------------- |
+   | `GEMINI_API_KEY`                                                    | AI Insights, Ask AI, add-form auto-fill     | [aistudio.google.com/apikey](https://aistudio.google.com/apikey) |
+   | `NEXT_PUBLIC_SUPABASE_URL` + `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Real accounts + cloud sync + Google sign-in | Supabase → Connect (or Settings → API + API Keys)                |
+   | `NEXT_PUBLIC_SITE_URL`                                              | Absolute SEO / Open Graph URLs              | your deployed domain                                             |
+
+   Restart the dev server after editing `.env.local`. The full walkthrough (Supabase table,
+   Row Level Security SQL, Google OAuth, email confirmation) is in **[guide.md](./guide.md)**.
 
 ## Features
 
-- **Landing page**: public, modern marketing page; every app route is protected behind it.
-- **Auth**: email/password accounts via Supabase, plus a one-click **guest mode** with mock data.
-- **Dashboard**: hero stats, color-coded upcoming renewals, recent activity, AI insights, quick-add.
-- **Subscriptions**: fuzzy search, filter (category / status / billing), sort, grid/list toggle, slide-over detail with full CRUD + pause/resume/archive. Duplicate names are blocked.
-- **Analytics**: real 12-month spend trend (built from each subscription's start date), category donut, billing cadence, "most expensive" & "longest held".
-- **AI Insights**: `POST /api/ai-suggest` sends your list to Claude server-side and returns dismissible cancellation suggestions with estimated annual savings.
-- **Settings**: profile (display name), default currency (14 currencies with flags, INR by default), reminder threshold, JSON import/export, clear-all. Every change confirms with a toast.
-- **Brand logos**: 160+ colored Simple Icons, plus uncolored react-icons fallbacks (Amazon, Microsoft, etc.) for brands Simple Icons no longer ships.
+- **Landing page** - public marketing page; every app route sits behind it.
+- **Auth** - email/password and **Google** sign-in via Supabase, plus one-click **guest mode** with sample data.
+- **Dashboard** - hero stats, color-coded upcoming renewals, recent activity, AI panel, quick-add.
+- **Subscriptions** - fuzzy search, searchable category picker, filters, sort, grid/list toggle, and a slide-over with full CRUD + pause/resume/archive. Duplicate names are blocked.
+- **Analytics** - a real 12-month spend trend, category donut, billing cadence, "most expensive" and "longest held".
+- **Multi-currency** - each subscription is stored in the currency you enter it in; every amount on screen is converted to your default currency using live FX rates (`/api/fx`, cached, with an offline fallback), so totals and per-item amounts always read in one currency.
+- **AI (Google Gemini, server-side)** - cancellation **Insights**, free-form **Ask AI**, and **auto-fill** of category + billing cycle when adding a subscription.
+- **Renewal reminders** - optional browser notifications for renewals within your threshold.
+- **PWA** - installable, with a maskable icon set and an offline service worker.
+- **Settings** - display name, account info, default currency (14 currencies with SVG flags that render on every OS, INR by default), reminder threshold, notification toggle, JSON import/export, and clear-all. Every change confirms with a toast.
+- **Brand logos** - 160+ colored Simple Icons plus uncolored react-icons fallbacks, with distinct marks per sub-brand.
 
 ## Data & sync
 
-- **Guests** use `localStorage` (Zustand `persist`); data stays on the device.
-- **Signed-in users** get their full dataset stored as a single JSON row in Supabase,
-  protected by Row Level Security, loaded on sign-in and saved (debounced) on change.
-- If Supabase isn't configured, the app gracefully runs in guest-only mode.
+- **Guests** use `localStorage` (Zustand `persist`) - data stays on the device.
+- **Signed-in users** get their dataset stored as a single JSON row in Supabase, protected by
+  Row Level Security, loaded on sign-in and saved (debounced) on change.
+- With no Supabase keys, the app runs cleanly in guest-only mode.
 
-## Accessibility & performance
+## Deploy
 
-- Skip-to-content link, focus trap in dialogs/sheets (Radix), `aria-*` labels, keyboard-navigable.
-- `prefers-reduced-motion` respected via Framer Motion and a global CSS fallback.
-- Charts and the AI panel are lazy-loaded with `next/dynamic`; fonts via `next/font`.
-- SEO-ready: rich metadata, a generated 1200x630 Open Graph image, and a branded favicon.
+The repo includes a `netlify.toml` - importing it into Netlify is enough to build and deploy.
+Add your env vars in **Site settings → Environment variables**, and set `NEXT_PUBLIC_SITE_URL`
+to your domain so Open Graph/SEO links are absolute. See [guide.md](./guide.md) for the full
+deployment checklist.
 
 ## Project structure
 
 ```
-app/            landing (/), login, (app) protected routes, api/ai-suggest, generated icons/OG
-components/     auth, brand, layout, dashboard, subscriptions, analytics, ai, ui (primitives)
-lib/            types, constants, utils, store, supabase, cloud, brand resolution
-hooks/          useSubscriptions, useSpendSummary
+app/          landing (/), login, (app) protected routes, api (ai-*, fx), manifest/robots/sitemap
+components/   auth, layout, dashboard, subscriptions, analytics, ai, ui (primitives)
+lib/          types, constants, utils, store, supabase, cloud, fx, brand resolution
+hooks/        useSubscriptions, useSpendSummary, useDisplayCurrency
 ```
 
-See [guide.md](./guide.md) for full setup and deployment instructions.
+See **[guide.md](./guide.md)** for full setup and deployment instructions.

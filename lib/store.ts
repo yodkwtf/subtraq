@@ -1,8 +1,21 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { Subscription, ActivityItem, Settings, ActivityType } from "./types";
+import type { FxRates } from "./fx";
 import { SEED_SUBSCRIPTIONS, DEFAULT_CURRENCY } from "./constants";
 import { uid, normalizeName } from "./utils";
+import { nextRenewalOnOrAfter } from "./dates";
+
+/**
+ * Active subscriptions auto-renew, so a renewal date that has slipped into the
+ * past just means it rolled over. Advance it to the next cycle on/after today so
+ * the UI never shows a live subscription as perpetually "overdue".
+ */
+function rollForwardRenewal(sub: Subscription): Subscription {
+  if (sub.status !== "Active") return sub;
+  const next = nextRenewalOnOrAfter(sub.nextRenewalDate, sub.billingCycle);
+  return next === sub.nextRenewalDate ? sub : { ...sub, nextRenewalDate: next };
+}
 
 export const DEFAULT_SETTINGS: Settings = {
   currency: DEFAULT_CURRENCY,
@@ -14,6 +27,13 @@ interface SubscriptionState {
   activity: ActivityItem[];
   settings: Settings;
   hydrated: boolean;
+  cloudReady: boolean;
+  /** User ids that have dismissed the sample-data banner (per-account). */
+  dismissedSampleUsers: string[];
+  fxRates: FxRates | null;
+  fxUpdatedAt: string | null;
+  setFxRates: (rates: FxRates, updatedAt: string | null) => void;
+  setSampleDismissed: (userId: string, dismissed: boolean) => void;
 
   addSubscription: (sub: Omit<Subscription, "id">) => string | null;
   updateSubscription: (id: string, patch: Partial<Subscription>) => void;
@@ -31,7 +51,9 @@ interface SubscriptionState {
     activity?: ActivityItem[];
     settings?: Settings;
   }) => void;
+  rollForwardRenewals: () => void;
   setHydrated: (v: boolean) => void;
+  setCloudReady: (v: boolean) => void;
 }
 
 function logActivity(
@@ -55,6 +77,19 @@ export const useStore = create<SubscriptionState>()(
       activity: [],
       settings: DEFAULT_SETTINGS,
       hydrated: false,
+      cloudReady: false,
+      dismissedSampleUsers: [],
+      fxRates: null,
+      fxUpdatedAt: null,
+
+      setFxRates: (rates, updatedAt) => set({ fxRates: rates, fxUpdatedAt: updatedAt }),
+
+      setSampleDismissed: (userId, dismissed) =>
+        set((state) => ({
+          dismissedSampleUsers: dismissed
+            ? Array.from(new Set([...state.dismissedSampleUsers, userId]))
+            : state.dismissedSampleUsers.filter((id) => id !== userId),
+        })),
 
       addSubscription: (sub) => {
         const exists = get().subscriptions.some(
@@ -157,17 +192,31 @@ export const useStore = create<SubscriptionState>()(
           settings: settings ?? state.settings,
         })),
 
+      rollForwardRenewals: () =>
+        set((state) => {
+          const subscriptions = state.subscriptions.map(rollForwardRenewal);
+          const changed = subscriptions.some((s, i) => s !== state.subscriptions[i]);
+          return changed ? { subscriptions } : {};
+        }),
+
       setHydrated: (v) => set({ hydrated: v }),
+
+      setCloudReady: (v) => set({ cloudReady: v }),
     }),
     {
-      name: "payoraai-v1",
+      name: "subtraq-v1",
       partialize: (state) => ({
         subscriptions: state.subscriptions,
         activity: state.activity,
         settings: state.settings,
+        fxRates: state.fxRates,
+        fxUpdatedAt: state.fxUpdatedAt,
+        dismissedSampleUsers: state.dismissedSampleUsers,
       }),
       onRehydrateStorage: () => (state) => {
         state?.setHydrated(true);
+        // Bring any active subscription whose renewal has passed up to date.
+        state?.rollForwardRenewals();
       },
     }
   )

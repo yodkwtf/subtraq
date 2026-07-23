@@ -1,4 +1,5 @@
 import type { Category, BillingCycle, Status, CurrencyCode, Subscription } from "./types";
+import { nextRenewalOnOrAfter } from "./dates";
 
 export const CATEGORIES: Category[] = [
   "Streaming",
@@ -33,21 +34,23 @@ export const CURRENCIES: {
   symbol: string;
   label: string;
   flag: string;
+  /** ISO 3166-1 alpha-2 code, used for SVG flags that render on every OS. */
+  country: string;
 }[] = [
-  { code: "INR", symbol: "₹", label: "Indian Rupee", flag: "🇮🇳" },
-  { code: "USD", symbol: "$", label: "US Dollar", flag: "🇺🇸" },
-  { code: "EUR", symbol: "€", label: "Euro", flag: "🇪🇺" },
-  { code: "GBP", symbol: "£", label: "British Pound", flag: "🇬🇧" },
-  { code: "JPY", symbol: "¥", label: "Japanese Yen", flag: "🇯🇵" },
-  { code: "AUD", symbol: "A$", label: "Australian Dollar", flag: "🇦🇺" },
-  { code: "CAD", symbol: "C$", label: "Canadian Dollar", flag: "🇨🇦" },
-  { code: "SGD", symbol: "S$", label: "Singapore Dollar", flag: "🇸🇬" },
-  { code: "AED", symbol: "د.إ", label: "UAE Dirham", flag: "🇦🇪" },
-  { code: "CNY", symbol: "¥", label: "Chinese Yuan", flag: "🇨🇳" },
-  { code: "CHF", symbol: "CHF", label: "Swiss Franc", flag: "🇨🇭" },
-  { code: "BRL", symbol: "R$", label: "Brazilian Real", flag: "🇧🇷" },
-  { code: "ZAR", symbol: "R", label: "South African Rand", flag: "🇿🇦" },
-  { code: "NZD", symbol: "NZ$", label: "New Zealand Dollar", flag: "🇳🇿" },
+  { code: "INR", symbol: "₹", label: "Indian Rupee", flag: "🇮🇳", country: "in" },
+  { code: "USD", symbol: "$", label: "US Dollar", flag: "🇺🇸", country: "us" },
+  { code: "EUR", symbol: "€", label: "Euro", flag: "🇪🇺", country: "eu" },
+  { code: "GBP", symbol: "£", label: "British Pound", flag: "🇬🇧", country: "gb" },
+  { code: "JPY", symbol: "¥", label: "Japanese Yen", flag: "🇯🇵", country: "jp" },
+  { code: "AUD", symbol: "A$", label: "Australian Dollar", flag: "🇦🇺", country: "au" },
+  { code: "CAD", symbol: "C$", label: "Canadian Dollar", flag: "🇨🇦", country: "ca" },
+  { code: "SGD", symbol: "S$", label: "Singapore Dollar", flag: "🇸🇬", country: "sg" },
+  { code: "AED", symbol: "د.إ", label: "UAE Dirham", flag: "🇦🇪", country: "ae" },
+  { code: "CNY", symbol: "¥", label: "Chinese Yuan", flag: "🇨🇳", country: "cn" },
+  { code: "CHF", symbol: "CHF", label: "Swiss Franc", flag: "🇨🇭", country: "ch" },
+  { code: "BRL", symbol: "R$", label: "Brazilian Real", flag: "🇧🇷", country: "br" },
+  { code: "ZAR", symbol: "R", label: "South African Rand", flag: "🇿🇦", country: "za" },
+  { code: "NZD", symbol: "NZ$", label: "New Zealand Dollar", flag: "🇳🇿", country: "nz" },
 ];
 
 export const CURRENCY_SYMBOLS: Record<CurrencyCode, string> = Object.fromEntries(
@@ -56,6 +59,10 @@ export const CURRENCY_SYMBOLS: Record<CurrencyCode, string> = Object.fromEntries
 
 export const CURRENCY_FLAGS: Record<CurrencyCode, string> = Object.fromEntries(
   CURRENCIES.map((c) => [c.code, c.flag])
+) as Record<CurrencyCode, string>;
+
+export const CURRENCY_COUNTRY: Record<CurrencyCode, string> = Object.fromEntries(
+  CURRENCIES.map((c) => [c.code, c.country])
 ) as Record<CurrencyCode, string>;
 
 export const DEFAULT_CURRENCY: CurrencyCode = "INR";
@@ -110,7 +117,9 @@ export const CATEGORY_EMOJI: Record<Category, string> = {
   Other: "📦",
 };
 
-export const SEED_SUBSCRIPTIONS: Subscription[] = [
+// Renewal dates are derived from each start date + billing cycle at load time so
+// the sample data never drifts into the past or out of sync with its cycle.
+const SEED_SOURCE: Omit<Subscription, "nextRenewalDate">[] = [
   {
     id: "1",
     name: "Netflix",
@@ -119,8 +128,7 @@ export const SEED_SUBSCRIPTIONS: Subscription[] = [
     amount: 649,
     currency: "INR",
     billingCycle: "Monthly",
-    nextRenewalDate: "2026-06-22",
-    startDate: "2023-01-12",
+    startDate: "2023-01-25",
     status: "Active",
     url: "https://netflix.com/account",
     notes: "Premium 4K plan.",
@@ -133,8 +141,7 @@ export const SEED_SUBSCRIPTIONS: Subscription[] = [
     amount: 1499,
     currency: "INR",
     billingCycle: "Annually",
-    nextRenewalDate: "2026-11-10",
-    startDate: "2021-11-10",
+    startDate: "2021-08-10",
     status: "Active",
     url: "https://amazon.in/prime",
   },
@@ -146,7 +153,6 @@ export const SEED_SUBSCRIPTIONS: Subscription[] = [
     amount: 399,
     currency: "INR",
     billingCycle: "Monthly",
-    nextRenewalDate: "2026-06-18",
     startDate: "2022-03-01",
     status: "Active",
     url: "https://github.com/settings/billing",
@@ -159,7 +165,6 @@ export const SEED_SUBSCRIPTIONS: Subscription[] = [
     amount: 1699,
     currency: "INR",
     billingCycle: "Monthly",
-    nextRenewalDate: "2026-07-01",
     startDate: "2023-08-15",
     status: "Active",
     url: "https://vercel.com/account",
@@ -172,7 +177,6 @@ export const SEED_SUBSCRIPTIONS: Subscription[] = [
     amount: 1015,
     currency: "INR",
     billingCycle: "Monthly",
-    nextRenewalDate: "2026-06-30",
     startDate: "2022-06-30",
     status: "Active",
     url: "https://figma.com/settings",
@@ -184,7 +188,6 @@ export const SEED_SUBSCRIPTIONS: Subscription[] = [
     amount: 1499,
     currency: "INR",
     billingCycle: "Annually",
-    nextRenewalDate: "2027-01-15",
     startDate: "2024-01-15",
     status: "Active",
   },
@@ -196,7 +199,6 @@ export const SEED_SUBSCRIPTIONS: Subscription[] = [
     amount: 119,
     currency: "INR",
     billingCycle: "Monthly",
-    nextRenewalDate: "2026-06-25",
     startDate: "2020-05-20",
     status: "Active",
     url: "https://spotify.com/account",
@@ -209,12 +211,19 @@ export const SEED_SUBSCRIPTIONS: Subscription[] = [
     amount: 699,
     currency: "INR",
     billingCycle: "Monthly",
-    nextRenewalDate: "2026-07-05",
     startDate: "2024-02-10",
     status: "Paused",
     url: "https://linear.app/settings",
   },
 ];
+
+export const SEED_SUBSCRIPTIONS: Subscription[] = SEED_SOURCE.map((s) => ({
+  ...s,
+  nextRenewalDate: nextRenewalOnOrAfter(s.startDate, s.billingCycle),
+}));
+
+/** Ids of the sample subscriptions, used to detect an untouched sample dataset. */
+export const SEED_IDS = new Set(SEED_SUBSCRIPTIONS.map((s) => s.id));
 
 export const NAV_ITEMS = [
   { href: "/dashboard", label: "Dashboard", icon: "LayoutDashboard" },

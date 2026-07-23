@@ -12,6 +12,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { Combobox } from "@/components/ui/combobox";
 import { SubscriptionCard } from "./SubscriptionCard";
 import { SlideOverPanel } from "./SlideOverPanel";
 import { useFilteredSubscriptions, type SortKey, type ViewMode } from "@/hooks/useSubscriptions";
@@ -53,7 +54,6 @@ export function SubscriptionList() {
 
   return (
     <div className="space-y-5">
-      {/* Controls */}
       <div className="glass space-y-3 rounded-2xl p-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <div className="relative flex-1">
@@ -88,7 +88,6 @@ export function SubscriptionList() {
               <ArrowUpDown className={cn("h-4 w-4 transition-transform", sortDir === "desc" && "rotate-180")} />
             </Button>
 
-            {/* View toggle */}
             <div className="flex rounded-lg border border-border p-0.5" role="group" aria-label="View mode">
               <button
                 onClick={() => setView("grid")}
@@ -116,16 +115,18 @@ export function SubscriptionList() {
           </div>
         </div>
 
-        {/* Filters */}
         <div className="flex flex-wrap items-center gap-2">
           <span className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
             <SlidersHorizontal className="h-3.5 w-3.5" /> Filter
           </span>
-          <FilterSelect
-            label="Category"
+          <Combobox
+            ariaLabel="Filter by category"
             value={category}
             onChange={(v) => setCategory(v as Category | "All")}
-            options={CATEGORIES}
+            options={["All", ...CATEGORIES]}
+            placeholder="All"
+            searchPlaceholder="Search categories…"
+            className="h-8 w-auto gap-1.5 px-2.5 text-xs"
           />
           <FilterSelect
             label="Status"
@@ -145,7 +146,6 @@ export function SubscriptionList() {
         </div>
       </div>
 
-      {/* Results */}
       {results.length === 0 ? (
         <div className="glass flex flex-col items-center gap-3 rounded-2xl p-12 text-center">
           <PackageOpen className="h-10 w-10 text-muted-foreground" />
