@@ -1,4 +1,5 @@
 import type { Category, BillingCycle, Status, CurrencyCode, Subscription } from "./types";
+import { nextRenewalOnOrAfter } from "./dates";
 
 export const CATEGORIES: Category[] = [
   "Streaming",
@@ -116,7 +117,9 @@ export const CATEGORY_EMOJI: Record<Category, string> = {
   Other: "📦",
 };
 
-export const SEED_SUBSCRIPTIONS: Subscription[] = [
+// Renewal dates are derived from each start date + billing cycle at load time so
+// the sample data never drifts into the past or out of sync with its cycle.
+const SEED_SOURCE: Omit<Subscription, "nextRenewalDate">[] = [
   {
     id: "1",
     name: "Netflix",
@@ -125,8 +128,7 @@ export const SEED_SUBSCRIPTIONS: Subscription[] = [
     amount: 649,
     currency: "INR",
     billingCycle: "Monthly",
-    nextRenewalDate: "2026-06-22",
-    startDate: "2023-01-12",
+    startDate: "2023-01-25",
     status: "Active",
     url: "https://netflix.com/account",
     notes: "Premium 4K plan.",
@@ -139,8 +141,7 @@ export const SEED_SUBSCRIPTIONS: Subscription[] = [
     amount: 1499,
     currency: "INR",
     billingCycle: "Annually",
-    nextRenewalDate: "2026-11-10",
-    startDate: "2021-11-10",
+    startDate: "2021-08-10",
     status: "Active",
     url: "https://amazon.in/prime",
   },
@@ -152,7 +153,6 @@ export const SEED_SUBSCRIPTIONS: Subscription[] = [
     amount: 399,
     currency: "INR",
     billingCycle: "Monthly",
-    nextRenewalDate: "2026-06-18",
     startDate: "2022-03-01",
     status: "Active",
     url: "https://github.com/settings/billing",
@@ -165,7 +165,6 @@ export const SEED_SUBSCRIPTIONS: Subscription[] = [
     amount: 1699,
     currency: "INR",
     billingCycle: "Monthly",
-    nextRenewalDate: "2026-07-01",
     startDate: "2023-08-15",
     status: "Active",
     url: "https://vercel.com/account",
@@ -178,7 +177,6 @@ export const SEED_SUBSCRIPTIONS: Subscription[] = [
     amount: 1015,
     currency: "INR",
     billingCycle: "Monthly",
-    nextRenewalDate: "2026-06-30",
     startDate: "2022-06-30",
     status: "Active",
     url: "https://figma.com/settings",
@@ -190,7 +188,6 @@ export const SEED_SUBSCRIPTIONS: Subscription[] = [
     amount: 1499,
     currency: "INR",
     billingCycle: "Annually",
-    nextRenewalDate: "2027-01-15",
     startDate: "2024-01-15",
     status: "Active",
   },
@@ -202,7 +199,6 @@ export const SEED_SUBSCRIPTIONS: Subscription[] = [
     amount: 119,
     currency: "INR",
     billingCycle: "Monthly",
-    nextRenewalDate: "2026-06-25",
     startDate: "2020-05-20",
     status: "Active",
     url: "https://spotify.com/account",
@@ -215,12 +211,19 @@ export const SEED_SUBSCRIPTIONS: Subscription[] = [
     amount: 699,
     currency: "INR",
     billingCycle: "Monthly",
-    nextRenewalDate: "2026-07-05",
     startDate: "2024-02-10",
     status: "Paused",
     url: "https://linear.app/settings",
   },
 ];
+
+export const SEED_SUBSCRIPTIONS: Subscription[] = SEED_SOURCE.map((s) => ({
+  ...s,
+  nextRenewalDate: nextRenewalOnOrAfter(s.startDate, s.billingCycle),
+}));
+
+/** Ids of the sample subscriptions, used to detect an untouched sample dataset. */
+export const SEED_IDS = new Set(SEED_SUBSCRIPTIONS.map((s) => s.id));
 
 export const NAV_ITEMS = [
   { href: "/dashboard", label: "Dashboard", icon: "LayoutDashboard" },

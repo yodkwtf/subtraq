@@ -1,15 +1,13 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import {
-  differenceInCalendarDays,
-  parseISO,
-  isValid,
-  addMonths,
-  addYears,
-} from "date-fns";
+import { differenceInCalendarDays, parseISO, isValid } from "date-fns";
 import type { BillingCycle, Subscription } from "./types";
 import { CURRENCY_SYMBOLS, DEFAULT_CURRENCY } from "./constants";
 import type { CurrencyCode } from "./types";
+
+// Date helpers live in ./dates (no dependency on constants, so the seed data can
+// use them too). Re-exported here for existing import sites.
+export { renewalFromCycle, todayISO, nextRenewalOnOrAfter } from "./dates";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -41,6 +39,13 @@ export function toAnnual(amount: number, cycle: BillingCycle): number {
   return toMonthly(amount, cycle) * 12;
 }
 
+/** The period a cycle bills over, as a noun (so "per month", not "per monthly"). */
+export function billingPeriod(cycle: BillingCycle): string {
+  if (cycle === "Annually") return "year";
+  if (cycle === "Quarterly") return "quarter";
+  return "month";
+}
+
 export function formatCurrency(
   amount: number,
   currency: CurrencyCode | string = DEFAULT_CURRENCY,
@@ -63,19 +68,6 @@ export function formatCurrency(
 
 export function currencySymbol(currency: CurrencyCode | string): string {
   return CURRENCY_SYMBOLS[currency as CurrencyCode] ?? "₹";
-}
-
-/** The next renewal date for a start date under a given billing cycle. */
-export function renewalFromCycle(startDate: string, cycle: BillingCycle): string {
-  const base = parseISO(startDate);
-  const from = isValid(base) ? base : new Date();
-  const next =
-    cycle === "Annually"
-      ? addYears(from, 1)
-      : cycle === "Quarterly"
-        ? addMonths(from, 3)
-        : addMonths(from, 1);
-  return next.toISOString().slice(0, 10);
 }
 
 /** Lower-cased, trimmed name for duplicate detection. */

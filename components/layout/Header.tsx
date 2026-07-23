@@ -18,7 +18,7 @@ export function Header() {
   const currency = useStore((s) => s.settings.currency);
   const { openAdd } = useEditor();
 
-  const title = NAV.find((n) => n.href === pathname)?.label ?? "PayoraAI";
+  const title = NAV.find((n) => n.href === pathname)?.label ?? "SubTraq";
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-border/60 bg-background/70 px-4 backdrop-blur-xl sm:px-6">

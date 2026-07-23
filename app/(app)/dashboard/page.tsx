@@ -6,6 +6,7 @@ import { UpcomingRenewals } from "@/components/dashboard/UpcomingRenewals";
 import { RecentActivity } from "@/components/dashboard/RecentActivity";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/components/auth/auth-context";
+import { useStore } from "@/lib/store";
 
 const AiInsightsPanel = dynamic(
   () => import("@/components/ai/AiInsightsPanel").then((m) => m.AiInsightsPanel),
@@ -17,6 +18,7 @@ const AiInsightsPanel = dynamic(
 
 export default function DashboardPage() {
   const { displayName } = useAuth();
+  const hasSubscriptions = useStore((s) => s.subscriptions.length > 0);
 
   return (
     <div className="space-y-6">
@@ -29,7 +31,7 @@ export default function DashboardPage() {
 
       <StatsRow />
 
-      <AiInsightsPanel />
+      {hasSubscriptions && <AiInsightsPanel />}
 
       <div className="grid gap-6 lg:grid-cols-5">
         <div className="lg:col-span-3">

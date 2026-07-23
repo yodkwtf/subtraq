@@ -49,14 +49,14 @@ export function StatsRow() {
       value: String(summary.activeCount),
       sub: `${summary.pausedCount} paused`,
       icon: LayoutGrid,
-      accent: "from-emerald-500/20 to-emerald-500/5 text-emerald-400",
+      accent: "from-emerald-500/20 to-emerald-500/5 text-emerald-600 dark:text-emerald-400",
     },
     {
       label: "Next renewal",
       value: summary.nextRenewal ? summary.nextRenewal.sub.name : "None",
       sub: summary.nextRenewal ? urgencyLabel(summary.nextRenewal.days) : "Nothing upcoming",
       icon: Timer,
-      accent: "from-amber-500/20 to-amber-500/5 text-amber-400",
+      accent: "from-amber-500/20 to-amber-500/5 text-amber-600 dark:text-amber-400",
     },
   ];
 

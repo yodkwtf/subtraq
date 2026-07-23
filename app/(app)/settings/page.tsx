@@ -51,6 +51,7 @@ export default function SettingsPage() {
   const importData = useStore((s) => s.importData);
   const loadSampleData = useStore((s) => s.loadSampleData);
   const clearAll = useStore((s) => s.clearAll);
+  const setSampleDismissed = useStore((s) => s.setSampleDismissed);
 
   const { toast } = useToast();
   const { isAuthed, isGuest, user, signOut } = useAuth();
@@ -122,7 +123,7 @@ export default function SettingsPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `payoraai-export-${new Date().toISOString().slice(0, 10)}.json`;
+    a.download = `subtraq-export-${new Date().toISOString().slice(0, 10)}.json`;
     a.click();
     URL.revokeObjectURL(url);
     toast({
@@ -163,6 +164,8 @@ export default function SettingsPage() {
 
   const handleRestore = () => {
     loadSampleData();
+    // Loading the sample data again brings its banner back for this user.
+    if (user?.id) setSampleDismissed(user.id, false);
     toast({
       title: "Sample data restored",
       description: "8 example subscriptions are back.",
@@ -193,60 +196,66 @@ export default function SettingsPage() {
           <h2 className="font-semibold">Profile</h2>
         </div>
 
-        {isGuest ? (
-          <div className="flex flex-col items-start gap-3 rounded-lg border border-border/60 bg-secondary/30 p-4">
-            <p className="text-sm text-muted-foreground">
-              You&apos;re browsing as a guest. Create an account to set a display name and
-              sync your data across devices.
-            </p>
-            <Link href="/login">
-              <Button variant="secondary" className="gap-2">
-                <LogIn className="h-4 w-4" /> Sign in / Sign up
+        <div className="space-y-4">
+          <div className="space-y-1.5">
+            <Label htmlFor="display-name">Display name</Label>
+            <div className="flex gap-2">
+              <Input
+                id="display-name"
+                value={nameDraft}
+                onChange={(e) => setNameDraft(e.target.value)}
+                placeholder="Your name"
+              />
+              <Button
+                onClick={handleSaveName}
+                disabled={nameDraft.trim() === (settings.name ?? "")}
+              >
+                Save
               </Button>
-            </Link>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Used for the greeting and menu. {isGuest ? "Saved on this device." : null}
+            </p>
           </div>
-        ) : (
-          <div className="space-y-4">
-            <div className="space-y-1.5">
-              <Label htmlFor="display-name">Display name</Label>
-              <div className="flex gap-2">
-                <Input
-                  id="display-name"
-                  value={nameDraft}
-                  onChange={(e) => setNameDraft(e.target.value)}
-                  placeholder="Your name"
-                />
-                <Button
-                  onClick={handleSaveName}
-                  disabled={nameDraft.trim() === (settings.name ?? "")}
-                >
-                  Save
+
+          {isGuest ? (
+            <div className="flex flex-col items-start gap-3 rounded-lg border border-border/60 bg-secondary/30 p-4">
+              <p className="text-sm text-muted-foreground">
+                You&apos;re browsing as a guest, so your name and data stay on this device.
+                Create an account to sync everything across devices.
+              </p>
+              <Link href="/login?mode=signup">
+                <Button variant="secondary" className="gap-2">
+                  <LogIn className="h-4 w-4" /> Sign in / Sign up
+                </Button>
+              </Link>
+            </div>
+          ) : (
+            <>
+              {user?.email && (
+                <div className="space-y-1.5">
+                  <Label>Email</Label>
+                  <Input value={user.email} disabled readOnly />
+                </div>
+              )}
+              {user?.created_at && (
+                <div className="space-y-1.5">
+                  <Label>Member since</Label>
+                  <Input
+                    value={format(new Date(user.created_at), "d MMMM yyyy")}
+                    disabled
+                    readOnly
+                  />
+                </div>
+              )}
+              <div className="pt-1">
+                <Button variant="outline" className="gap-2" onClick={handleSignOut}>
+                  <LogOut className="h-4 w-4" /> Sign out
                 </Button>
               </div>
-            </div>
-            {user?.email && (
-              <div className="space-y-1.5">
-                <Label>Email</Label>
-                <Input value={user.email} disabled readOnly />
-              </div>
-            )}
-            {user?.created_at && (
-              <div className="space-y-1.5">
-                <Label>Member since</Label>
-                <Input
-                  value={format(new Date(user.created_at), "d MMMM yyyy")}
-                  disabled
-                  readOnly
-                />
-              </div>
-            )}
-            <div className="pt-1">
-              <Button variant="outline" className="gap-2" onClick={handleSignOut}>
-                <LogOut className="h-4 w-4" /> Sign out
-              </Button>
-            </div>
-          </div>
-        )}
+            </>
+          )}
+        </div>
       </Card>
 
       <Card className="glass p-5">

@@ -6,17 +6,18 @@ import type { Subscription } from "@/lib/types";
 import { CategoryBadge, StatusBadge } from "./badges";
 import { SubscriptionLogo } from "./SubscriptionLogo";
 import {
+  billingPeriod,
   daysUntil,
-  formatCurrency,
   renewalUrgency,
   urgencyLabel,
   cn,
 } from "@/lib/utils";
+import { useDisplayCurrency } from "@/hooks/useDisplayCurrency";
 
 const URGENCY_TEXT: Record<string, string> = {
-  overdue: "text-red-400",
-  red: "text-red-400",
-  yellow: "text-amber-400",
+  overdue: "text-red-600 dark:text-red-400",
+  red: "text-red-600 dark:text-red-400",
+  yellow: "text-amber-600 dark:text-amber-400",
   green: "text-muted-foreground",
 };
 
@@ -28,6 +29,7 @@ interface Props {
 }
 
 export function SubscriptionCard({ sub, view, threshold, onClick }: Props) {
+  const { formatDisplay } = useDisplayCurrency();
   const days = daysUntil(sub.nextRenewalDate);
   const urgency = renewalUrgency(sub.nextRenewalDate, threshold);
   const cycleLabel =
@@ -57,7 +59,7 @@ export function SubscriptionCard({ sub, view, threshold, onClick }: Props) {
           </p>
         </div>
         <div className="text-right">
-          <p className="font-semibold tabular-nums">{formatCurrency(sub.amount, sub.currency)}</p>
+          <p className="font-semibold tabular-nums">{formatDisplay(sub.amount, sub.currency)}</p>
           <p className="text-xs text-muted-foreground">/{cycleLabel}</p>
         </div>
       </motion.button>
@@ -88,9 +90,9 @@ export function SubscriptionCard({ sub, view, threshold, onClick }: Props) {
       <div className="mt-auto flex items-end justify-between border-t border-border/50 pt-4">
         <div>
           <p className="text-xl font-bold tabular-nums">
-            {formatCurrency(sub.amount, sub.currency)}
+            {formatDisplay(sub.amount, sub.currency)}
           </p>
-          <p className="text-xs text-muted-foreground">per {sub.billingCycle.toLowerCase()}</p>
+          <p className="text-xs text-muted-foreground">per {billingPeriod(sub.billingCycle)}</p>
         </div>
         {sub.status === "Active" && (
           <p className={cn("text-xs font-medium", URGENCY_TEXT[urgency])}>

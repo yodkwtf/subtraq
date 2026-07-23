@@ -1,4 +1,4 @@
-# Netlify configuration for PayoraAI (Next.js 15 App Router).
+# Netlify configuration for SubTraq (Next.js 15 App Router).
 # Importing this repo on Netlify is enough to deploy: Netlify reads this file,
 # installs the official Next.js runtime, and wires up the API route as a
 # serverless function. The only thing you add by hand is environment variables.

@@ -9,11 +9,11 @@ import { Card } from "@/components/ui/card";
 import type { ActivityType } from "@/lib/types";
 
 const ICON: Record<ActivityType, { icon: React.ElementType; tone: string; verb: string }> = {
-  added: { icon: Plus, tone: "text-emerald-400 bg-emerald-500/10", verb: "Added" },
+  added: { icon: Plus, tone: "text-emerald-600 dark:text-emerald-400 bg-emerald-500/10", verb: "Added" },
   edited: { icon: Pencil, tone: "text-primary bg-primary/10", verb: "Edited" },
-  cancelled: { icon: XCircle, tone: "text-red-400 bg-red-500/10", verb: "Cancelled" },
-  paused: { icon: PauseCircle, tone: "text-amber-400 bg-amber-500/10", verb: "Paused" },
-  resumed: { icon: PlayCircle, tone: "text-emerald-400 bg-emerald-500/10", verb: "Resumed" },
+  cancelled: { icon: XCircle, tone: "text-red-600 dark:text-red-400 bg-red-500/10", verb: "Cancelled" },
+  paused: { icon: PauseCircle, tone: "text-amber-600 dark:text-amber-400 bg-amber-500/10", verb: "Paused" },
+  resumed: { icon: PlayCircle, tone: "text-emerald-600 dark:text-emerald-400 bg-emerald-500/10", verb: "Resumed" },
 };
 
 export function RecentActivity() {

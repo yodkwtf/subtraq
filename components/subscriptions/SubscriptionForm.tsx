@@ -17,10 +17,11 @@ import {
 import { LogoPicker } from "./LogoPicker";
 import { CurrencyFlag } from "@/components/ui/currency-flag";
 import { Combobox } from "@/components/ui/combobox";
+import { InfoHint } from "@/components/ui/info-hint";
 import { useToast } from "@/components/ui/toast";
 import { CATEGORIES, BILLING_CYCLES, STATUSES, CURRENCIES } from "@/lib/constants";
 import type { Subscription, Category, Status, BillingCycle } from "@/lib/types";
-import { currencySymbol, renewalFromCycle } from "@/lib/utils";
+import { currencySymbol, renewalFromCycle, todayISO } from "@/lib/utils";
 
 export type SubscriptionDraft = Omit<Subscription, "id">;
 
@@ -30,10 +31,6 @@ interface Props {
   onSubmit: (draft: SubscriptionDraft) => void;
   onCancel?: () => void;
   formId?: string;
-}
-
-function todayISO() {
-  return new Date().toISOString().slice(0, 10);
 }
 
 export function SubscriptionForm({
@@ -138,6 +135,8 @@ export function SubscriptionForm({
     if (!values.name.trim()) next.name = "Name is required.";
     if (!(values.amount > 0)) next.amount = "Enter an amount greater than 0.";
     if (!values.nextRenewalDate) next.nextRenewalDate = "Renewal date is required.";
+    else if (values.startDate && values.nextRenewalDate < values.startDate)
+      next.nextRenewalDate = "Renewal date can't be before the start date.";
     if (!values.startDate) next.startDate = "Start date is required.";
     else if (values.startDate > todayISO())
       next.startDate = "Start date can't be in the future.";
@@ -306,7 +305,10 @@ export function SubscriptionForm({
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1.5">
-          <Label htmlFor="startDate">Start date</Label>
+          <div className="flex items-center gap-1.5">
+            <Label htmlFor="startDate">Start date</Label>
+            <InfoHint label="When you first subscribed. This is fixed history that sets how long you've had the subscription and anchors the billing schedule." />
+          </div>
           <Input
             id="startDate"
             type="date"
@@ -319,10 +321,17 @@ export function SubscriptionForm({
           {fieldErr("startDate")}
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="nextRenewalDate">Next renewal</Label>
+          <div className="flex items-center gap-1.5">
+            <Label htmlFor="nextRenewalDate">Next renewal</Label>
+            <InfoHint
+              align="right"
+              label="Your next charge. Auto-filled from the start date and billing cycle, and it rolls forward each cycle on its own - only change it if your real billing day differs."
+            />
+          </div>
           <Input
             id="nextRenewalDate"
             type="date"
+            min={values.startDate || undefined}
             value={values.nextRenewalDate}
             onChange={(e) => set("nextRenewalDate", e.target.value)}
             aria-invalid={!!errors.nextRenewalDate}

@@ -162,7 +162,7 @@ export function AiInsightsPanel() {
                 <p className="font-medium text-destructive">Couldn&apos;t analyse</p>
                 <p className="text-muted-foreground">{error}</p>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Make sure <code className="rounded bg-muted px-1">ANTHROPIC_API_KEY</code> is
+                  Make sure <code className="rounded bg-muted px-1">GEMINI_API_KEY</code> is
                   set in <code className="rounded bg-muted px-1">.env.local</code>.
                 </p>
               </div>
@@ -253,7 +253,7 @@ export function AiInsightsPanel() {
               animate={{ opacity: 1 }}
               className="rounded-xl border border-dashed border-border/60 p-4 text-sm text-muted-foreground"
             >
-              Click <span className="font-medium text-foreground">Analyse</span> and Claude will
+              Click <span className="font-medium text-foreground">Analyse</span> and AI will
               review your subscriptions for overlap, high cost, and low likely usage.
             </motion.p>
           )}

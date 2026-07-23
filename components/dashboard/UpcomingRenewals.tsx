@@ -5,28 +5,24 @@ import { format } from "date-fns";
 import { CalendarClock } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { Card } from "@/components/ui/card";
-import {
-  daysUntil,
-  formatCurrency,
-  renewalUrgency,
-  urgencyLabel,
-  cn,
-} from "@/lib/utils";
+import { daysUntil, renewalUrgency, urgencyLabel, cn } from "@/lib/utils";
+import { useDisplayCurrency } from "@/hooks/useDisplayCurrency";
 import type { Urgency } from "@/lib/utils";
 import { SubscriptionLogo } from "@/components/subscriptions/SubscriptionLogo";
 import { useEditor } from "@/components/editor-context";
 
 const URGENCY_STYLES: Record<Urgency, { dot: string; text: string; ring: string }> = {
-  overdue: { dot: "bg-red-500", text: "text-red-400", ring: "ring-red-500/30" },
-  red: { dot: "bg-red-500", text: "text-red-400", ring: "ring-red-500/30" },
-  yellow: { dot: "bg-amber-400", text: "text-amber-400", ring: "ring-amber-400/30" },
-  green: { dot: "bg-emerald-400", text: "text-emerald-400", ring: "ring-emerald-400/30" },
+  overdue: { dot: "bg-red-500", text: "text-red-600 dark:text-red-400", ring: "ring-red-500/30" },
+  red: { dot: "bg-red-500", text: "text-red-600 dark:text-red-400", ring: "ring-red-500/30" },
+  yellow: { dot: "bg-amber-400", text: "text-amber-600 dark:text-amber-400", ring: "ring-amber-400/30" },
+  green: { dot: "bg-emerald-400", text: "text-emerald-600 dark:text-emerald-400", ring: "ring-emerald-400/30" },
 };
 
 export function UpcomingRenewals() {
   const subscriptions = useStore((s) => s.subscriptions);
   const threshold = useStore((s) => s.settings.reminderThreshold);
   const { openEdit } = useEditor();
+  const { formatDisplay } = useDisplayCurrency();
 
   const upcoming = subscriptions
     .filter((s) => s.status === "Active")
@@ -79,7 +75,7 @@ export function UpcomingRenewals() {
                   </span>
                   <span className="text-right">
                     <span className="block text-sm font-semibold tabular-nums">
-                      {formatCurrency(sub.amount, sub.currency)}
+                      {formatDisplay(sub.amount, sub.currency)}
                     </span>
                     <span className={cn("flex items-center justify-end gap-1.5 text-xs font-medium", style.text)}>
                       <span className={cn("h-1.5 w-1.5 rounded-full", style.dot)} aria-hidden />

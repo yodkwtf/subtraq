@@ -1,17 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="254" height="48" viewBox="0 0 254 48" role="img" aria-label="PayoraAI">
+<svg xmlns="http://www.w3.org/2000/svg" width="162" height="48" viewBox="0 0 162 48" role="img" aria-label="SubTraq">
   <defs>
-    <linearGradient id="payora-grad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="48" y2="48">
+    <linearGradient id="brand-grad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="48" y2="48">
       <stop offset="0%" stop-color="#6366F1" />
       <stop offset="100%" stop-color="#22D3EE" />
     </linearGradient>
-    <linearGradient id="payora-text" gradientUnits="userSpaceOnUse" x1="60" y1="0" x2="248" y2="0">
+    <linearGradient id="brand-text" gradientUnits="userSpaceOnUse" x1="60" y1="0" x2="159" y2="0">
       <stop offset="0%" stop-color="#6366F1" />
       <stop offset="100%" stop-color="#22D3EE" />
     </linearGradient>
   </defs>
-  <rect width="48" height="48" rx="13" fill="url(#payora-grad)" />
-  <rect x="15" y="12" width="6" height="24" rx="3" fill="#fff" />
-  <rect x="15" y="12" width="16" height="14" rx="7" fill="#fff" />
-  <rect x="21" y="17" width="7" height="4" rx="2" fill="url(#payora-grad)" />
-  <text x="60" y="33" font-family="'Segoe UI', system-ui, -apple-system, Roboto, Arial, sans-serif" font-size="27" font-weight="700" letter-spacing="-0.5" fill="url(#payora-text)">PayoraAI</text>
+  <rect width="48" height="48" rx="13" fill="url(#brand-grad)" />
+  <text x="24" y="25" text-anchor="middle" dominant-baseline="central" font-family="'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="31" font-weight="800" fill="#fff">S</text>
+  <text x="60" y="33" font-family="'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="27" font-weight="700" letter-spacing="-0.5" fill="url(#brand-text)">SubTraq</text>
 </svg>

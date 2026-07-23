@@ -4,7 +4,7 @@ import * as React from "react";
 import { useStore } from "@/lib/store";
 import { daysUntil, urgencyLabel } from "@/lib/utils";
 
-const SEEN_KEY = "payoraai-reminded";
+const SEEN_KEY = "subtraq-reminded";
 
 /**
  * Browser-notification reminders for renewals within the user's threshold. Fires

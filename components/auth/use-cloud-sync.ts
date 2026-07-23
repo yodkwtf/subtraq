@@ -13,7 +13,8 @@ import { loadCloudData, saveCloudData } from "@/lib/cloud";
 export function useCloudSync(): { ready: boolean } {
   const { user, configured, loading } = useAuth();
   const replaceAll = useStore((s) => s.replaceAll);
-  const [ready, setReady] = React.useState(false);
+  const ready = useStore((s) => s.cloudReady);
+  const setReady = useStore((s) => s.setCloudReady);
   const userId = user?.id ?? null;
 
   React.useEffect(() => {
@@ -44,7 +45,7 @@ export function useCloudSync(): { ready: boolean } {
     return () => {
       cancelled = true;
     };
-  }, [userId, configured, loading, replaceAll]);
+  }, [userId, configured, loading, replaceAll, setReady]);
 
   React.useEffect(() => {
     if (!configured || !userId || !ready) return;

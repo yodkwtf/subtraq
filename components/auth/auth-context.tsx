@@ -6,7 +6,7 @@ import { getSupabase, isSupabaseConfigured } from "@/lib/supabase";
 import { useStore, DEFAULT_SETTINGS } from "@/lib/store";
 import { SEED_SUBSCRIPTIONS } from "@/lib/constants";
 
-const GUEST_KEY = "payoraai-guest";
+const GUEST_KEY = "subtraq-guest";
 
 interface AuthContextValue {
   user: User | null;
@@ -17,7 +17,7 @@ interface AuthContextValue {
   displayName: string;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, name?: string) => Promise<void>;
-  signInWithProvider: (provider: "google" | "github") => Promise<void>;
+  signInWithProvider: (provider: "google") => Promise<void>;
   signOut: () => Promise<void>;
   continueAsGuest: () => void;
 }
@@ -97,7 +97,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
 
   const signInWithProvider = React.useCallback(
-    async (provider: "google" | "github") => {
+    async (provider: "google") => {
       const sb = getSupabase();
       if (!sb) throw new Error(NOT_CONFIGURED_MSG);
       const redirectTo =
