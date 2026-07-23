@@ -69,7 +69,21 @@ export default function LoginPage() {
     setSubmitting(true);
     try {
       if (mode === 'signup') {
-        await signUp(email.trim(), password, name.trim() || undefined);
+        const { needsConfirmation } = await signUp(
+          email.trim(),
+          password,
+          name.trim() || undefined
+        );
+        if (needsConfirmation) {
+          // Confirm email is on: no session yet, so don't send them to the app.
+          toast({
+            title: 'Confirm your email',
+            description: `We sent a confirmation link to ${email.trim()}. Click it to verify and you'll be signed in.`,
+          });
+          setPassword('');
+          setMode('signin');
+          return;
+        }
         toast({
           title: 'Welcome to SubTraq',
           description: 'Your account is ready. Start tracking your subscriptions.',

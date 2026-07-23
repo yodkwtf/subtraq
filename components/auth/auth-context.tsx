@@ -16,7 +16,11 @@ interface AuthContextValue {
   configured: boolean;
   displayName: string;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string, name?: string) => Promise<void>;
+  signUp: (
+    email: string,
+    password: string,
+    name?: string
+  ) => Promise<{ needsConfirmation: boolean }>;
   signInWithProvider: (provider: "google") => Promise<void>;
   signOut: () => Promise<void>;
   continueAsGuest: () => void;
@@ -84,14 +88,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     async (email: string, password: string, name?: string) => {
       const sb = getSupabase();
       if (!sb) throw new Error(NOT_CONFIGURED_MSG);
-      const { error } = await sb.auth.signUp({
+      const { data, error } = await sb.auth.signUp({
         email,
         password,
-        options: { data: name ? { name } : undefined },
+        options: {
+          data: name ? { name } : undefined,
+          // Clicking the confirmation link verifies the email and signs the user
+          // in, landing them straight on the dashboard.
+          emailRedirectTo:
+            typeof window !== "undefined" ? `${window.location.origin}/dashboard` : undefined,
+        },
       });
       if (error) throw error;
-      localStorage.removeItem(GUEST_KEY);
-      setIsGuest(false);
+      // With "Confirm email" on, Supabase returns no session until the user
+      // verifies via the emailed link. Only treat them as signed in otherwise.
+      if (data.session) {
+        localStorage.removeItem(GUEST_KEY);
+        setIsGuest(false);
+      }
+      return { needsConfirmation: !data.session };
     },
     []
   );
