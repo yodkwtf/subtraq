@@ -1,8 +1,6 @@
 # 💸 SubTraq - Subscription Tracker
 
-Track every subscription, see where your money goes, and cut the waste. SubTraq is a
-premium dashboard for recurring payments, renewal reminders, spend analytics, multi-currency
-totals, and AI-powered cancellation suggestions.
+Track every subscription, see where your money goes, and cut the waste. SubTraq is a premium dashboard for recurring payments, renewal reminders, spend analytics, multi-currency totals, and AI-powered cancellation suggestions.
 
 Try it instantly as a **guest** (data stays on your device), or **sign in** to sync across
 devices.

@@ -48,7 +48,7 @@ export function SampleDataBanner() {
   };
 
   return (
-    <div className="flex items-center justify-center gap-2 border-b border-primary/20 bg-primary/5 px-4 py-2 text-center text-xs text-muted-foreground">
+    <div className="sticky top-16 z-20 flex items-center justify-center gap-2 border-b border-primary/20 bg-primary/10 px-4 py-2 text-center text-xs text-muted-foreground backdrop-blur-xl">
       <Sparkles className="h-3.5 w-3.5 shrink-0 text-primary" />
       <span>
         You&apos;re viewing{" "}

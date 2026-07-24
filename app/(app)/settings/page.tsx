@@ -168,7 +168,7 @@ export default function SettingsPage() {
     if (user?.id) setSampleDismissed(user.id, false);
     toast({
       title: "Sample data restored",
-      description: "8 example subscriptions are back.",
+      description: "6 example subscriptions are back.",
     });
   };
 

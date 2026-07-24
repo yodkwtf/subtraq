@@ -1,4 +1,5 @@
 import {
+  siIcloud,
   siNetflix,
   siSpotify,
   siYoutube,
@@ -181,6 +182,7 @@ interface RawIcon {
 }
 
 const RAW: RawIcon[] = [
+  siIcloud,
   siNetflix,
   siSpotify,
   siYoutube,
