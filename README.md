@@ -5,7 +5,7 @@ Track every subscription, see where your money goes, and cut the waste. SubTraq 
 Try it instantly as a **guest** (data stays on your device), or **sign in** to sync across
 devices.
 
-**Live demo:** https://subtraq.netlify.app
+**Live demo:** https://subtraq.yodkwtf.com
 
 ![SubTraq](./public/og-image.png)
 

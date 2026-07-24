@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { ToastProvider } from '@/components/ui/toast';
 import { AuthProvider } from '@/components/auth/auth-context';
 import { ServiceWorkerRegister } from '@/components/sw-register';
+import { SITE_URL as siteUrl } from '@/lib/site';
 
 const geistSans = Geist({
   subsets: ['latin'],
@@ -18,10 +19,6 @@ const geistMono = Geist_Mono({
   display: 'swap',
 });
 
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ??
-  process.env.URL ??
-  'https://subtraq.netlify.app';
 const title = 'SubTraq - Track subscriptions, kill the waste';
 const description =
   'SubTraq is a beautiful subscription tracker. See every recurring payment, get renewal reminders, visualize your spend, and use AI to spot subscriptions worth cancelling.';
