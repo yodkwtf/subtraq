@@ -1,5 +1,5 @@
 // Minimal offline-first service worker for SubTraq (no build step required).
-const CACHE = "subtraq-v1";
+const CACHE = "subtraq-v2";
 const PRECACHE = ["/", "/dashboard", "/login", "/logo.svg", "/favicon.svg"];
 const ASSET_RE = /\.(?:css|js|svg|png|jpg|jpeg|webp|woff2?)$/;
 

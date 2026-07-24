@@ -11,5 +11,5 @@
   </defs>
   <rect width="48" height="48" rx="13" fill="url(#brand-grad)" />
   <text x="24" y="25" text-anchor="middle" dominant-baseline="central" font-family="'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="31" font-weight="800" fill="#fff">S</text>
-  <text x="60" y="33" font-family="'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="27" font-weight="700" letter-spacing="-0.5" fill="url(#brand-text)">SubTraq</text>
+  <text x="60" y="33" textLength="99" lengthAdjust="spacingAndGlyphs" font-family="'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="27" font-weight="700" letter-spacing="-0.5" fill="url(#brand-text)">SubTraq</text>
 </svg>
