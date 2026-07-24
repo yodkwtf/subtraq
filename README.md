@@ -1,4 +1,4 @@
-# 💸 SubTraq - Subscription Tracker
+# 💸 SubTraq - AI Based Subscription Tracker
 
 Track every subscription, see where your money goes, and cut the waste. SubTraq is a premium dashboard for recurring payments, renewal reminders, spend analytics, multi-currency totals, and AI-powered cancellation suggestions.
 
@@ -76,7 +76,7 @@ deployment checklist.
 
 ## Project structure
 
-```
+```sh
 app/          landing (/), login, (app) protected routes, api (ai-*, fx), manifest/robots/sitemap
 components/   auth, layout, dashboard, subscriptions, analytics, ai, ui (primitives)
 lib/          types, constants, utils, store, supabase, cloud, fx, brand resolution
