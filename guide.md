@@ -213,7 +213,7 @@ fiddliest part, so here it is in full.
    **+ Create client**). Choose **Application type: Web application** and give it any name.
 5. Under **Authorized redirect URIs**, click **+ Add URI** and paste the Supabase **Callback
    URL** from step A2 exactly. (Optional) under **Authorized JavaScript origins**, add
-   `http://localhost:3000` and your production URL (e.g. `https://subtraq.netlify.app`).
+   `http://localhost:3000` and your production URL (e.g. `https://subtraq.yodkwtf.com`).
 6. Click **Create**, then copy the **Client ID** and **Client secret** from the popup.
 
 **C. Finish in Supabase.**
@@ -268,7 +268,7 @@ is environment variables.**
    (the same keys from your `.env.local`):
    - `GEMINI_API_KEY` (optional, for the AI panel)
    - `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (optional, for accounts)
-   - `NEXT_PUBLIC_SITE_URL` set to your Netlify URL, e.g. `https://your-site.netlify.app`
+   - `NEXT_PUBLIC_SITE_URL` set to your site URL, e.g. `https://subtraq.yodkwtf.com`
 4. Trigger a redeploy (**Deploys -> Trigger deploy -> Deploy site**) so the new env vars
    are baked in. If you added them before the first deploy, you can skip this.
 5. **After it's live, point Supabase at your real URL** - update the Site URL, redirect
@@ -284,14 +284,14 @@ is environment variables.**
 ### 6.1 Production auth settings (do this after your first deploy)
 
 Everything in section 5 was set for `http://localhost:3000`. Once the site is live at your
-real URL (e.g. `https://subtraq.netlify.app`), point Supabase and Google at it, or logins and
+real URL (e.g. `https://subtraq.yodkwtf.com`), point Supabase and Google at it, or logins and
 confirmation emails will still send people to localhost.
 
 1. **Site URL + redirects (Supabase).** Open **Authentication -> URL Configuration**:
-   - Set **Site URL** to your deployed URL, e.g. `https://subtraq.netlify.app`. Supabase uses
+   - Set **Site URL** to your deployed URL, e.g. `https://subtraq.yodkwtf.com`. Supabase uses
      this as the base for confirmation-email links and as the default post-login redirect, so
      this is the single most important change.
-   - Under **Redirect URLs**, **+ Add URL** `https://subtraq.netlify.app/**` (keep the
+   - Under **Redirect URLs**, **+ Add URL** `https://subtraq.yodkwtf.com/**` (keep the
      `http://localhost:3000/**` entry too if you still develop locally). The app returns users
      to `/dashboard`, which the `/**` wildcard covers.
 
@@ -308,7 +308,7 @@ confirmation emails will still send people to localhost.
 3. **Google sign-in for production.** The Supabase **callback URL** doesn't change, so you
    normally don't need a new redirect URI in Google. Just make sure your production URL is in
    Supabase's **Redirect URLs** (step 1). If you added **Authorized JavaScript origins** in
-   Google (5.6 B5), add your production origin (`https://subtraq.netlify.app`) there too. If
+   Google (5.6 B5), add your production origin (`https://subtraq.yodkwtf.com`) there too. If
    your Google consent screen is still in **Testing**, only your **Test users** can sign in -
    click **Publish app** in Google to open it to everyone.
 
