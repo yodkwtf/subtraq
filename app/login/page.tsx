@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/components/auth/auth-context';
 import { useToast } from '@/components/ui/toast';
+import { Wordmark } from '@/components/wordmark';
 
 type Mode = 'signin' | 'signup';
 type Provider = 'google';
@@ -144,8 +145,7 @@ export default function LoginPage() {
     <div className='ambient-bg flex min-h-screen flex-col'>
       <header className='mx-auto w-full max-w-6xl px-5 py-5'>
         <Link href='/' aria-label='SubTraq home' className='inline-flex'>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src='/logo-wordmark.svg' alt='SubTraq' className='h-8 w-auto' />
+          <Wordmark />
         </Link>
       </header>
 
