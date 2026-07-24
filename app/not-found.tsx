@@ -2,13 +2,13 @@ import Link from 'next/link';
 import { Home, LayoutDashboard, Ghost } from 'lucide-react';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { Wordmark } from '@/components/wordmark';
 
 export default function NotFound() {
   return (
     <div className='ambient-bg flex min-h-screen flex-col items-center justify-center px-5 text-center'>
       <Link href='/' aria-label='SubTraq home' className='mb-10 inline-flex'>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src='/logo-wordmark.svg' alt='SubTraq' className='h-8 w-auto' />
+        <Wordmark />
       </Link>
 
       <div className='glass relative w-full max-w-md overflow-hidden rounded-3xl p-8 sm:p-10'>

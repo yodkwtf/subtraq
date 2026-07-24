@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { Wordmark } from '@/components/wordmark';
 
 export const metadata: Metadata = {
   title: {
@@ -71,8 +72,7 @@ export default function LandingPage() {
   return (
     <div className='ambient-bg min-h-screen'>
       <header className='mx-auto flex max-w-6xl items-center justify-between px-5 py-5'>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src='/logo-wordmark.svg' alt='SubTraq' className='h-8 w-auto' />
+        <Wordmark />
         <nav className='flex items-center gap-2'>
           <Link
             href='/login'
@@ -176,8 +176,7 @@ export default function LandingPage() {
 
       <footer className='border-t border-border/60'>
         <div className='mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-5 py-6 text-sm text-muted-foreground sm:flex-row'>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src='/logo-wordmark.svg' alt='SubTraq' className='h-6 w-auto' />
+          <Wordmark size='sm' />
           <p>Built for people who hate surprise charges.</p>
         </div>
       </footer>
